@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hyperscript"
+dynamic = ["version"]
+
+[project.optional-dependencies]
+lint = [
+  "black",
+  "isort",
+  "pylint",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "hyperscript.__version__"}
