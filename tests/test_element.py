@@ -36,20 +36,7 @@ class TestElement(unittest.TestCase):
         )
         self.assertEqual(str(h("div.foo.bar")), '<div class="foo bar"></div>')
 
-    def test_styles(self):
-        self.assertEqual(
-            str(h("div", {"style": {"color": "red"}})), '<div style="color: red"></div>'
-        )
-
-    def test_str_styles(self):
-        self.assertEqual(
-            str(h("div", {"style": "color: red"})), '<div style="color: red"></div>'
-        )
-
-    def test_attributes(self):
-        self.assertEqual(
-            str(h("div", {"attr-value": "foo"})), '<div attr-value="foo"></div>'
-        )
+        self.assertEqual(str(h("div", {"prop": "foo"})), '<div prop="foo"></div>')
 
         self.assertEqual(
             str(h("button", {"disabled": None})), "<button disabled></button>"
@@ -61,6 +48,16 @@ class TestElement(unittest.TestCase):
 
         self.assertEqual(
             str(h("button", {"disabled": ""})), '<button disabled=""></button>'
+        )
+
+    def test_styles(self):
+        self.assertEqual(
+            str(h("div", {"style": {"color": "red"}})), '<div style="color: red"></div>'
+        )
+
+    def test_str_styles(self):
+        self.assertEqual(
+            str(h("div", {"style": "color: red"})), '<div style="color: red"></div>'
         )
 
     def test_other_types(self):
