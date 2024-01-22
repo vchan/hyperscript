@@ -1,6 +1,6 @@
 from hyperscript.element import Element
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 # pylint: disable=invalid-name
