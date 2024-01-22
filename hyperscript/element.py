@@ -20,6 +20,8 @@ VOID_ELEMENTS = {
 
 
 class Element:
+    __hash__ = object.__hash__
+
     def __init__(self, tag, *args):
         self.tag, self.classes, self.id_selector = self.parse_tag(tag)
         self.attrs, self.children = self.parse_args(args)
