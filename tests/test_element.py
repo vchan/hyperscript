@@ -68,3 +68,14 @@ class TestElement(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             h("br", "foo")
+
+    def test_equality(self):
+        self.assertEqual(h("div"), h("div"))
+
+        self.assertEqual(h("div", h("p", "Foo")), h("div", h("p", "Foo")))
+
+        self.assertEqual(h("div", h("p", "Foo")), "<div><p>Foo</p></div>")
+
+        self.assertNotEqual(h("div"), h("p"))
+
+        self.assertNotEqual(h("div", h("p", "Foo")), h("div", h("p", "Bar")))

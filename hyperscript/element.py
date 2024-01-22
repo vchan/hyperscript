@@ -88,3 +88,10 @@ class Element:
             return f"<{opening_tag}>"
         children = "".join(str(child) for child in self.children)
         return f"<{opening_tag}>{children}</{self.tag}>"
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Element):
+            return str(self) == str(other)
+        if isinstance(other, str):
+            return str(self) == other
+        return False
