@@ -11,7 +11,7 @@ authors = [
 description = "HyperText with Python"
 readme = "README.md"
 license = { text="MIT License" }
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -21,9 +21,8 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-lint = [
-  "black",
-  "pylint",
+dev = [
+  "pre-commit",
 ]
 
 [project.urls]
