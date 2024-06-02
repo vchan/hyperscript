@@ -1,5 +1,6 @@
 import re
-from typing import Dict, List, Tuple, Union
+from html import escape
+from typing import Any, Dict, List, Tuple, Union
 
 TAG_PATTERN = re.compile(r"([.#]?[^\s#.]+)")
 VOID_ELEMENTS = {
@@ -19,11 +20,16 @@ VOID_ELEMENTS = {
 }
 
 
+class Unescaped(str):
+    pass
+
+
 class Element:
     __hash__ = object.__hash__
 
-    def __init__(self, tag, *args):
+    def __init__(self, tag: str, *args: Any, autoescape: bool = False) -> None:
         self.tag, self.classes, self.id_selector = self.parse_tag(tag)
+        self.autoescape = autoescape
         self.attrs, self.children = self.parse_args(args)
 
         if self.is_void and self.children:
@@ -50,7 +56,7 @@ class Element:
                 id_selector = item[1:]
         return tag, classes, id_selector
 
-    def parse_args(self, args: list) -> Tuple[dict, list]:
+    def parse_args(self, args: tuple[Any]) -> Tuple[dict[str, Any], list[Any]]:
         attrs = {}
         children = []
         for arg in args:
@@ -70,13 +76,20 @@ class Element:
             return style
         return "; ".join(f"{k}: {v}" for k, v in style.items())
 
+    def _stringify(self, value: Any) -> str:
+        if not isinstance(value, str):
+            return str(value)
+        elif self.autoescape and not isinstance(value, Unescaped):
+            return escape(value)
+        return value
+
     def __str__(self) -> str:
-        opening_tag = [self.tag]
+        opening_tags = [self.tag]
         if self.classes:
             classes = " ".join(self.classes)
-            opening_tag.append(f'class="{classes}"')
+            opening_tags.append(f'class="{classes}"')
         if self.id_selector:
-            opening_tag.append(f'id="{self.id_selector}"')
+            opening_tags.append(f'id="{self.id_selector}"')
         if self.attrs:
             attrs = []
             for attr, value in self.attrs.items():
@@ -84,14 +97,14 @@ class Element:
                     attrs.append(f"{attr}")
                 else:
                     attrs.append(f'{attr}="{value}"')
-            opening_tag.extend(attrs)
-        opening_tag = " ".join(opening_tag)
+            opening_tags.extend(attrs)
+        opening_tag = " ".join(opening_tags)
         if self.is_void:
             return f"<{opening_tag}>"
-        children = "".join(str(child) for child in self.children)
+        children = "".join(self._stringify(child) for child in self.children)
         return f"<{opening_tag}>{children}</{self.tag}>"
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, Element):
             return str(self) == str(other)
         if isinstance(other, str):

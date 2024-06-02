@@ -1,35 +1,35 @@
 import unittest
 
-from hyperscript import h
+from hyperscript import h, unescape
 
 
 class TestElement(unittest.TestCase):
-    def test_element(self):
+    def test_element(self) -> None:
         self.assertEqual(str(h("div")), "<div></div>")
 
-    def test_nested(self):
+    def test_nested(self) -> None:
         self.assertEqual(
             str(h("div", h("h1", "Header"), h("p", "Paragraph"))),
             "<div><h1>Header</h1><p>Paragraph</p></div>",
         )
 
-    def test_nested_arrays(self):
+    def test_nested_arrays(self) -> None:
         self.assertEqual(
             str(h("div", [h("h1", "Header"), h("p", "Paragraph")])),
             "<div><h1>Header</h1><p>Paragraph</p></div>",
         )
 
-    def test_namespace(self):
+    def test_namespace(self) -> None:
         self.assertEqual(str(h("myns:mytag")), "<myns:mytag></myns:mytag>")
 
-    def test_id_selector(self):
+    def test_id_selector(self) -> None:
         self.assertEqual(str(h("div#foo")), '<div id="foo"></div>')
 
-    def test_class_selector(self):
+    def test_class_selector(self) -> None:
         self.assertEqual(str(h("div.foo")), '<div class="foo"></div>')
         self.assertEqual(str(h("div.foo.bar")), '<div class="foo bar"></div>')
 
-    def test_properties(self):
+    def test_properties(self) -> None:
         self.assertEqual(
             str(h("a", {"href": "https://example.com/"})),
             '<a href="https://example.com/"></a>',
@@ -50,26 +50,26 @@ class TestElement(unittest.TestCase):
             str(h("button", {"disabled": ""})), '<button disabled=""></button>'
         )
 
-    def test_styles(self):
+    def test_styles(self) -> None:
         self.assertEqual(
             str(h("div", {"style": {"color": "red"}})), '<div style="color: red"></div>'
         )
 
-    def test_str_styles(self):
+    def test_str_styles(self) -> None:
         self.assertEqual(
             str(h("div", {"style": "color: red"})), '<div style="color: red"></div>'
         )
 
-    def test_other_types(self):
+    def test_other_types(self) -> None:
         self.assertEqual(str(h("div", True, 5, None)), "<div>True5None</div>")
 
-    def test_void(self):
+    def test_void(self) -> None:
         self.assertEqual(str(h("br")), "<br>")
 
         with self.assertRaises(ValueError):
             h("br", "foo")
 
-    def test_equality(self):
+    def test_equality(self) -> None:
         self.assertEqual(h("div"), h("div"))
 
         self.assertEqual(h("div", h("p", "Foo")), h("div", h("p", "Foo")))
@@ -79,3 +79,18 @@ class TestElement(unittest.TestCase):
         self.assertNotEqual(h("div"), h("p"))
 
         self.assertNotEqual(h("div", h("p", "Foo")), h("div", h("p", "Bar")))
+
+    def test_escape(self) -> None:
+        self.assertEqual(str(h("div", "<&>")), "<div><&></div>")
+
+        self.assertEqual(
+            str(h("div", "<&>", autoescape=True)), "<div>&lt;&amp;&gt;</div>"
+        )
+
+    def test_unescape(self) -> None:
+        self.assertEqual(
+            str(h("div", unescape("<&>"), autoescape=True)), "<div><&></div>"
+        )
+
+        with self.assertRaises(TypeError):
+            unescape(h("div"))  # type: ignore
