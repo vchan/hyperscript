@@ -22,7 +22,7 @@ VOID_ELEMENTS = {
 }
 
 
-class Unescaped(str):
+class SafeStr(str):
     pass
 
 
@@ -81,7 +81,7 @@ class Element:
     def _stringify(self, value: Any) -> str:
         if not isinstance(value, str):
             return str(value)
-        elif self.autoescape and not isinstance(value, Unescaped):
+        elif self.autoescape and not isinstance(value, SafeStr):
             return escape(value)
         return value
 
@@ -98,7 +98,7 @@ class Element:
                 if value is True or value is None:
                     attrs.append(f"{attr}")
                 else:
-                    attrs.append(f'{attr}="{value}"')
+                    attrs.append(f'{attr}="{self._stringify(value)}"')
             opening_tags.extend(attrs)
         opening_tag = " ".join(opening_tags)
         if self.is_void:

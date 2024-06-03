@@ -1,6 +1,6 @@
 import unittest
 
-from hyperscript import h, unescape
+from hyperscript import h, safe
 
 
 class TestElement(unittest.TestCase):
@@ -87,10 +87,18 @@ class TestElement(unittest.TestCase):
             str(h("div", "<&>", autoescape=True)), "<div>&lt;&amp;&gt;</div>"
         )
 
-    def test_unescape(self) -> None:
         self.assertEqual(
-            str(h("div", unescape("<&>"), autoescape=True)), "<div><&></div>"
+            str(h("div", {"prop": "<&>"}, autoescape=True)),
+            '<div prop="&lt;&amp;&gt;"></div>',
+        )
+
+    def test_safe(self) -> None:
+        self.assertEqual(str(h("div", safe("<&>"), autoescape=True)), "<div><&></div>")
+
+        self.assertEqual(
+            str(h("div", {"prop": safe("<&>")}, autoescape=True)),
+            '<div prop="<&>"></div>',
         )
 
         with self.assertRaises(TypeError):
-            unescape(h("div"))  # type: ignore
+            safe(h("div"))  # type: ignore

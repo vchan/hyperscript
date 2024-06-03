@@ -1,8 +1,6 @@
 from typing import Any, Optional
 
-from hyperscript.element import Element, Unescaped
-
-__version__ = "0.0.3"
+from hyperscript.element import Element, SafeStr
 
 AUTOESCAPE = False
 
@@ -13,7 +11,7 @@ def h(tag: str, *args: Any, autoescape: Optional[bool] = None) -> Element:
     return Element(tag, *args, autoescape=autoescape)
 
 
-def unescape(value: str) -> Unescaped:
+def safe(value: str) -> SafeStr:
     if not isinstance(value, str):
         raise TypeError(f"expected a str, got {type(value)}")
-    return Unescaped(value)
+    return SafeStr(value)
