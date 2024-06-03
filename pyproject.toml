@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -29,5 +29,5 @@ dev = [
 "Homepage" = "https://github.com/vchan/hyperscript"
 "Bug Tracker" = "https://github.com/vchan/hyperscript/issues"
 
-[tool.setuptools.dynamic]
-version = {attr = "hyperscript.__version__"}
+[tool.setuptools_scm]
+version_file = "hyperscript/_version.py"
