@@ -2,7 +2,7 @@ from typing import Any, Optional
 
 from hyperscript.element import Element, SafeStr
 
-AUTOESCAPE = False
+AUTOESCAPE = True
 
 
 def h(tag: str, *args: Any, autoescape: Optional[bool] = None) -> Element:

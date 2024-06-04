@@ -81,22 +81,20 @@ class TestElement(unittest.TestCase):
         self.assertNotEqual(h("div", h("p", "Foo")), h("div", h("p", "Bar")))
 
     def test_escape(self) -> None:
-        self.assertEqual(str(h("div", "<&>")), "<div><&></div>")
+        self.assertEqual(str(h("div", "<&>", autoescape=False)), "<div><&></div>")
+
+        self.assertEqual(str(h("div", "<&>")), "<div>&lt;&amp;&gt;</div>")
 
         self.assertEqual(
-            str(h("div", "<&>", autoescape=True)), "<div>&lt;&amp;&gt;</div>"
-        )
-
-        self.assertEqual(
-            str(h("div", {"prop": "<&>"}, autoescape=True)),
+            str(h("div", {"prop": "<&>"})),
             '<div prop="&lt;&amp;&gt;"></div>',
         )
 
     def test_safe(self) -> None:
-        self.assertEqual(str(h("div", safe("<&>"), autoescape=True)), "<div><&></div>")
+        self.assertEqual(str(h("div", safe("<&>"))), "<div><&></div>")
 
         self.assertEqual(
-            str(h("div", {"prop": safe("<&>")}, autoescape=True)),
+            str(h("div", {"prop": safe("<&>")})),
             '<div prop="<&>"></div>',
         )
 

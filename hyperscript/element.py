@@ -29,7 +29,7 @@ class SafeStr(str):
 class Element:
     __hash__ = object.__hash__
 
-    def __init__(self, tag: str, *args: Any, autoescape: bool = False) -> None:
+    def __init__(self, tag: str, *args: Any, autoescape: bool = True) -> None:
         self.tag, self.classes, self.id_selector = self.parse_tag(tag)
         self.autoescape = autoescape
         self.attrs, self.children = self.parse_args(args)
