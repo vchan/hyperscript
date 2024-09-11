@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 from html import escape
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Mapping, Tuple, Union
 
 TAG_PATTERN = re.compile(r"([.#]?[^\s#.]+)")
 VOID_ELEMENTS = {
@@ -62,7 +62,7 @@ class Element:
         attrs = {}
         children = []
         for arg in args:
-            if isinstance(arg, dict):
+            if isinstance(arg, Mapping):
                 for key, value in arg.items():
                     if key == "style":
                         value = self.parse_style(value)
