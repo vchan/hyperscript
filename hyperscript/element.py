@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 from html import escape
-from typing import Any, Dict, List, Mapping, Tuple, Union
+from typing import Any, Mapping
 
 TAG_PATTERN = re.compile(r"([.#]?[^\s#.]+)")
 VOID_ELEMENTS = {
@@ -41,7 +41,7 @@ class Element:
     def is_void(self) -> bool:
         return self.tag in VOID_ELEMENTS
 
-    def parse_tag(self, tag: str) -> Tuple[str, List[str], str]:
+    def parse_tag(self, tag: str) -> tuple[str, list[str], str]:
         """Parse the tag and extract classes and id.
 
         Hyperscript supports a shortcut for setting class and id if the tag
@@ -58,7 +58,7 @@ class Element:
                 id_selector = item[1:]
         return tag, classes, id_selector
 
-    def parse_args(self, args: tuple[Any]) -> Tuple[dict[str, Any], list[Any]]:
+    def parse_args(self, args: tuple[Any]) -> tuple[dict[str, Any], list[Any]]:
         attrs = {}
         children = []
         for arg in args:
@@ -73,7 +73,7 @@ class Element:
                 children.append(arg)
         return attrs, children
 
-    def parse_style(self, style: Union[str, Dict[str, str]]) -> str:
+    def parse_style(self, style: str | dict[str, str]) -> str:
         if isinstance(style, str):
             return style
         return "; ".join(f"{k}: {v}" for k, v in style.items())
