@@ -21,8 +21,17 @@ Nesting elements
 >>> print(h("div", h("p", "Hello world!")))
 <div><p>Hello world!</p></div>
 ```
-Properties
+Attributes
 ```
 >>> print(h("a", {"href": "https://www.example.com"}, "link"))
 <a href="https://www.example.com">link</a>
+```
+Boolean attributes
+```
+>>> print(h("input", {"type": "checkbox", "checked": True}))  # Behavior is the same if "checked" is None
+<input type="checkbox" checked>
+>>> print(h("input", {"type": "checkbox", "checked": ""}))
+<input type="checkbox" checked="">
+>>> print(h("input", {"type": "checkbox", "checked": False}))
+<input type="checkbox">
 ```
