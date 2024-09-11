@@ -29,7 +29,7 @@ class TestElement(unittest.TestCase):
         self.assertEqual(str(h("div.foo")), '<div class="foo"></div>')
         self.assertEqual(str(h("div.foo.bar")), '<div class="foo bar"></div>')
 
-    def test_properties(self) -> None:
+    def test_attributes(self) -> None:
         self.assertEqual(
             str(h("a", {"href": "https://example.com/"})),
             '<a href="https://example.com/"></a>',
@@ -49,6 +49,8 @@ class TestElement(unittest.TestCase):
         self.assertEqual(
             str(h("button", {"disabled": ""})), '<button disabled=""></button>'
         )
+
+        self.assertEqual(str(h("button", {"disabled": False})), "<button></button>")
 
     def test_styles(self) -> None:
         self.assertEqual(
