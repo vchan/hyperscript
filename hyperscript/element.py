@@ -97,6 +97,8 @@ class Element:
             for attr, value in self.attrs.items():
                 if value is True or value is None:
                     attrs.append(f"{attr}")
+                elif value is False:
+                    continue
                 else:
                     attrs.append(f'{attr}="{self._stringify(value)}"')
             opening_tags.extend(attrs)
