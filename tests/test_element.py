@@ -1,3 +1,4 @@
+import types
 import unittest
 
 from hyperscript import h, safe
@@ -37,6 +38,11 @@ class TestElement(unittest.TestCase):
         self.assertEqual(str(h("div.foo.bar")), '<div class="foo bar"></div>')
 
         self.assertEqual(str(h("div", {"prop": "foo"})), '<div prop="foo"></div>')
+
+        self.assertEqual(
+            str(h("div", types.MappingProxyType({"prop": "foo"}))),
+            '<div prop="foo"></div>',
+        )
 
         self.assertEqual(
             str(h("button", {"disabled": None})), "<button disabled></button>"
