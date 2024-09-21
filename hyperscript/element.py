@@ -29,9 +29,12 @@ class SafeStr(str):
 class Element:
     __hash__ = object.__hash__
 
-    def __init__(self, tag: str, *args: Any, autoescape: bool = True) -> None:
+    def __init__(
+        self, tag: str, *args: Any, autoescape: bool = True, remove_empty: bool = False
+    ) -> None:
         self.tag, self.classes, self.id_selector = self.parse_tag(tag)
         self.autoescape = autoescape
+        self.remove_empty = remove_empty
         self.attrs, self.children = self.parse_args(args)
 
         if self.is_void and self.children:
@@ -40,6 +43,13 @@ class Element:
     @property
     def is_void(self) -> bool:
         return self.tag in VOID_ELEMENTS
+
+    def get_children(self, remove_empty: bool = False) -> list[Any]:
+        return [
+            child
+            for child in self.children
+            if not remove_empty or child not in ("", None)
+        ]
 
     def parse_tag(self, tag: str) -> tuple[str, list[str], str]:
         """Parse the tag and extract classes and id.
@@ -105,8 +115,17 @@ class Element:
         opening_tag = " ".join(opening_tags)
         if self.is_void:
             return f"<{opening_tag}>"
-        children = "".join(self._stringify(child) for child in self.children)
-        return f"<{opening_tag}>{children}</{self.tag}>"
+        children = []
+        for child in self.get_children(remove_empty=True):
+            if (
+                self.remove_empty
+                and isinstance(child, Element)
+                and not child.is_void
+                and not child.get_children(remove_empty=True)
+            ):
+                continue
+            children.append(self._stringify(child))
+        return f"<{opening_tag}>{''.join(children)}</{self.tag}>"
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, Element):

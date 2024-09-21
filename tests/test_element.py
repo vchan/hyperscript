@@ -69,7 +69,9 @@ class TestElement(unittest.TestCase):
         )
 
     def test_other_types(self) -> None:
-        self.assertEqual(str(h("div", True, 5, None)), "<div>True5None</div>")
+        self.assertEqual(
+            str(h("div", True, 5, False, None, "")), "<div>True5False</div>"
+        )
 
     def test_void(self) -> None:
         self.assertEqual(str(h("br")), "<br>")
@@ -108,3 +110,39 @@ class TestElement(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             safe(h("div"))  # type: ignore
+
+    def test_empty(self) -> None:
+        self.assertEqual(str(h("div")), "<div></div>")
+        self.assertEqual(str(h("div", None)), "<div></div>")
+        self.assertEqual(str(h("div", "")), "<div></div>")
+        self.assertEqual(str(h("div", "", None)), "<div></div>")
+
+    def test_remove_empty(self) -> None:
+        self.assertEqual(
+            str(
+                h(
+                    "div",
+                    h("div"),
+                    "foo",
+                    h("div", "bar"),
+                    h("div", ""),
+                    remove_empty=False,
+                )
+            ),
+            "<div><div></div>foo<div>bar</div><div></div></div>",
+        )
+        self.assertEqual(
+            str(
+                h(
+                    "div",
+                    h("div"),
+                    "foo",
+                    h("div", "bar"),
+                    h("div", ""),
+                    remove_empty=True,
+                )
+            ),
+            "<div>foo<div>bar</div></div>",
+        )
+
+        self.assertEqual(str(h("div", h("br"), remove_empty=True)), "<div><br></div>")
