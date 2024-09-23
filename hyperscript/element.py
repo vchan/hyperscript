@@ -44,13 +44,6 @@ class Element:
     def is_void(self) -> bool:
         return self.tag in VOID_ELEMENTS
 
-    def get_children(self, remove_empty: bool = False) -> list[Any]:
-        return [
-            child
-            for child in self.children
-            if not remove_empty or child not in ("", None)
-        ]
-
     def parse_tag(self, tag: str) -> tuple[str, list[str], str]:
         """Parse the tag and extract classes and id.
 
@@ -78,9 +71,10 @@ class Element:
                         value = self.parse_style(value)
                     attrs[key] = value
             elif isinstance(arg, list):
-                children.extend(arg)
+                children.extend([v for v in arg if v not in ("", None)])
             else:
-                children.append(arg)
+                if arg not in ("", None):
+                    children.append(arg)
         return attrs, children
 
     def parse_style(self, style: str | dict[str, str]) -> str:
@@ -116,12 +110,12 @@ class Element:
         if self.is_void:
             return f"<{opening_tag}>"
         children = []
-        for child in self.get_children(remove_empty=True):
+        for child in self.children:
             if (
                 self.remove_empty
                 and isinstance(child, Element)
                 and not child.is_void
-                and not child.get_children(remove_empty=True)
+                and not child.children
             ):
                 continue
             children.append(self._stringify(child))
