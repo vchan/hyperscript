@@ -35,3 +35,10 @@ Boolean attributes
 >>> print(h("input", {"type": "checkbox", "checked": False}))
 <input type="checkbox">
 ```
+Filtering out empty elements
+```
+>>> print(h("div", h("p", "Hello"), h("div", ""), h("p", "world!")))
+<div><p>Hello</p><div></div><p>world!</p></div>
+>>> print(h("div", h("p", "Hello"), h("div", ""), h("p", "world!"), remove_empty=True))
+<div><p>Hello</p><p>world!</p></div>
+```

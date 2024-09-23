@@ -29,9 +29,12 @@ class SafeStr(str):
 class Element:
     __hash__ = object.__hash__
 
-    def __init__(self, tag: str, *args: Any, autoescape: bool = True) -> None:
+    def __init__(
+        self, tag: str, *args: Any, autoescape: bool = True, remove_empty: bool = False
+    ) -> None:
         self.tag, self.classes, self.id_selector = self.parse_tag(tag)
         self.autoescape = autoescape
+        self.remove_empty = remove_empty
         self.attrs, self.children = self.parse_args(args)
 
         if self.is_void and self.children:
@@ -68,9 +71,10 @@ class Element:
                         value = self.parse_style(value)
                     attrs[key] = value
             elif isinstance(arg, list):
-                children.extend(arg)
+                children.extend([v for v in arg if v not in ("", None)])
             else:
-                children.append(arg)
+                if arg not in ("", None):
+                    children.append(arg)
         return attrs, children
 
     def parse_style(self, style: str | dict[str, str]) -> str:
@@ -105,8 +109,17 @@ class Element:
         opening_tag = " ".join(opening_tags)
         if self.is_void:
             return f"<{opening_tag}>"
-        children = "".join(self._stringify(child) for child in self.children)
-        return f"<{opening_tag}>{children}</{self.tag}>"
+        children = []
+        for child in self.children:
+            if (
+                self.remove_empty
+                and isinstance(child, Element)
+                and not child.is_void
+                and not child.children
+            ):
+                continue
+            children.append(self._stringify(child))
+        return f"<{opening_tag}>{''.join(children)}</{self.tag}>"
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, Element):
