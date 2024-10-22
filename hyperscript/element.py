@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 from html import escape
-from typing import Any, Mapping
+from typing import Any, Mapping, Union
 
 TAG_PATTERN = re.compile(r"([.#]?[^\s#.]+)")
 VOID_ELEMENTS = {
@@ -77,7 +77,7 @@ class Element:
                     children.append(arg)
         return attrs, children
 
-    def parse_style(self, style: str | dict[str, str]) -> str:
+    def parse_style(self, style: Union[str, dict[str, str]]) -> str:
         if isinstance(style, str):
             return style
         return "; ".join(f"{k}: {v}" for k, v in style.items())
