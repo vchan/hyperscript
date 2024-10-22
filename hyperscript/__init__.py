@@ -1,14 +1,18 @@
-from typing import Any, Optional
+from __future__ import annotations
+
+from typing import Any
 
 from hyperscript.element import Element, SafeStr
 
 AUTOESCAPE = True
 
 
-def h(tag: str, *args: Any, autoescape: Optional[bool] = None) -> Element:
+def h(
+    tag: str, *args: Any, autoescape: bool | None = None, remove_empty: bool = False
+) -> Element:
     if autoescape is None:
         autoescape = AUTOESCAPE
-    return Element(tag, *args, autoescape=autoescape)
+    return Element(tag, *args, autoescape=autoescape, remove_empty=remove_empty)
 
 
 def safe(value: str) -> SafeStr:
