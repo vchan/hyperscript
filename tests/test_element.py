@@ -146,3 +146,18 @@ class TestElement(unittest.TestCase):
         )
 
         self.assertEqual(str(h("div", h("br"), remove_empty=True)), "<div><br></div>")
+
+        self.assertEqual(
+            str(
+                h(
+                    "div",
+                    h(
+                        "div",
+                        h("div", remove_empty=True),
+                        remove_empty=True,
+                    ),
+                    remove_empty=True,
+                )
+            ),
+            "",
+        )

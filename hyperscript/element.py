@@ -90,6 +90,9 @@ class Element:
         return value
 
     def __str__(self) -> str:
+        return "".join(self._parts(remove_empty=self.remove_empty))
+
+    def _parts(self, remove_empty: bool = False) -> list[str]:
         opening_tags = [self.tag]
         if self.classes:
             classes = " ".join(self.classes)
@@ -106,20 +109,24 @@ class Element:
                 else:
                     attrs.append(f'{attr}="{self._stringify(value)}"')
             opening_tags.extend(attrs)
+
         opening_tag = " ".join(opening_tags)
+
         if self.is_void:
-            return f"<{opening_tag}>"
-        children = []
+            return [f"<{opening_tag}>"]
+
+        parts = []
+
         for child in self.children:
-            if (
-                self.remove_empty
-                and isinstance(child, Element)
-                and not child.is_void
-                and not child.children
-            ):
-                continue
-            children.append(self._stringify(child))
-        return f"<{opening_tag}>{''.join(children)}</{self.tag}>"
+            if isinstance(child, Element):
+                parts.extend(child._parts(remove_empty=remove_empty))
+            else:
+                parts.append(self._stringify(child))
+
+        if remove_empty and not parts:
+            return []
+
+        return [f"<{opening_tag}>", *parts, f"</{self.tag}>"]
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, Element):
