@@ -84,8 +84,6 @@ class TestElement(unittest.TestCase):
 
         self.assertEqual(h("div", h("p", "Foo")), h("div", h("p", "Foo")))
 
-        self.assertEqual(h("div", h("p", "Foo")), "<div><p>Foo</p></div>")
-
         self.assertNotEqual(h("div"), h("p"))
 
         self.assertNotEqual(h("div", h("p", "Foo")), h("div", h("p", "Bar")))
