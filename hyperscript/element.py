@@ -131,6 +131,4 @@ class Element:
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, Element):
             return str(self) == str(other)
-        if isinstance(other, str):
-            return str(self) == other
-        return False
+        return super().__eq__(other)
